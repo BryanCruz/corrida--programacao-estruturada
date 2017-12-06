@@ -6,7 +6,7 @@
  * andar: 5km/h
 */
 
-typedef struct s_funcao * funcao;
+typedef struct s_funcao funcao;
 
 struct s_funcao{
   double a;
@@ -14,16 +14,33 @@ struct s_funcao{
 };
 
 funcao nova_funcao(double a, double b){
-    funcao f = (funcao) malloc(sizeof(struct s_funcao));
-    if(f == NULL){
-      fprintf(stderr, "Erro na alocação de memória\n");
-      exit(1);
-    }
-
-    f->a = a;
-    f->b = b;
+    funcao f;
+    f.a = a;
+    f.b = b;
     return f;
 }
+
+funcao soma(funcao f, funcao g){
+  funcao h = {f.a + g.a, f.b + g.b};
+  return h;
+}
+
+
+funcao multiplicacao(funcao f, double c){
+  funcao h = {c*f.a, c*f.b};
+  return h;
+}
+
+funcao inversa(funcao f){
+  funcao h = {1/f.a, -f.b/f.a};
+  return h;
+}
+
+funcao composicao(funcao f, funcao g){
+  funcao h = (f.a*g.a, f.a*g.b + f.b);
+  return h;
+}
+
 
 typedef struct s_instrucao * instrucao;
 
@@ -47,6 +64,7 @@ instrucao nova_instrucao(double v, double fracao, char tipo){
     i->prox = NULL;
     return i;
 }
+
 int main(){
   char aux;
   while(scanf("%c", &aux) > 0){

@@ -48,19 +48,27 @@ instrucao nova_instrucao(double v, double fracao, char tipo){
     return i;
 }
 int main(){
-  while(scanf() > 0){
+  char aux;
+  while(scanf("%c", &aux) > 0){
     instrucao instrucoes = NULL;
-    char qual_v, tipo, frac1, frac2, temp;
+    char qual_v, tipo, aux;
+    int frac1, frac2;
+    int flag = 1;
     do{
-      scanf("%c %c %c %c", &qual_v, &frac1, &frac2, &tipo);
-
+      if (flag){
+        flag = 0;
+        qual_v = aux;
+        scanf(" %d %d %c", &frac1, &frac2, &tipo);
+      }else{
+        scanf("%c %d %d %c", &qual_v, &frac1, &frac2, &tipo);
+      }
       double v = qual_v == 'A'? 5 : 10;
-      double fracao = (1.0*(frac1 - '0'))/(frac2 - '0');
+      double fracao = (1.0*frac1)/frac2;
       instrucao i = nova_instrucao(v, fracao, tipo);
       i->prox = instrucoes;
       instrucoes = i;
 
-    }while(scanf("%c", &temp) && temp != '\n');
+    }while(scanf("%c", &aux) && aux != '\n');
 
     while(instrucoes != NULL){
         printf("v: %.2lf\nfrac: %.2lf\ntipo: %c\n\n",

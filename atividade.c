@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
-/* 
+/*
  * Comprimento do percurso: 100km
  * Correr: 10km/h
  * andar: 5km/h
@@ -9,68 +9,61 @@
 typedef struct s_funcao * funcao;
 
 struct s_funcao{
-    //ef = ei + v*t;
-    double ef;
-    double ei;
-    int v;
-    double t;
-    
-    funcao prox;
+  double a;
+  double b;
 };
 
-funcao nova_funcao(double ef, double ei, int v, double t){
-    funcao func = (funcao) malloc(sizeof(struct s_funcao));
-    if(func == NULL){
+funcao nova_funcao(double a, double b){
+    funcao f = (funcao) malloc(sizeof(struct s_funcao));
+    if(f == NULL){
       fprintf(stderr, "Erro na alocação de memória\n");
       exit(1);
     }
 
-    func->ef = ef;
-    func->ei = ei;
-    func->v = v;
-    func->t = t;
-    func->prox = NULL;
-
-    return func;
+    f->a = a;
+    f->b = b;
+    return f;
 }
 
 typedef struct s_instrucao * instrucao;
 
 struct s_instrucao{
-    char v;
-    double frac;
+    double v;
+    double fracao;
     char tipo;
     instrucao prox;
 };
 
-instrucao nova_instrucao(char v, char frac1, char frac2, char tipo){
-    instrucao instruc = (instrucao) malloc(sizeof(struct s_instrucao));
-    if(instruc == NULL){
+instrucao nova_instrucao(double v, double fracao, char tipo){
+    instrucao i = (instrucao) malloc(sizeof(struct s_instrucao));
+    if(i == NULL){
       fprintf(stderr, "Erro na alocação de memória\n");
       exit(1);
     }
 
-    instruc->v = v;
-    instruc->frac = (1.0*(frac1-'0'))/(frac2-'0');
-    instruc->tipo = tipo;
-    instruc->prox = NULL;
-    return instruc;
+    i->v;
+    i->fracao = fracao;
+    i->tipo = tipo;
+    i->prox = NULL;
+    return i;
 }
 int main(){
     instrucao instrucoes = NULL;
-    char v, tipo, frac1, frac2;
-    while(scanf("%c", &v) > 0 && v != '\n'){
+    char qual_v, tipo, frac1, frac2;
+    while(scanf("%c", &qual_v) > 0 && qual_v != '\n'){
         scanf("%c", &frac1);
         scanf("%c", &frac2);
         scanf("%c", &tipo);
-    
-        instrucao instruc = nova_instrucao(v, frac1, frac2, tipo);
-        instruc->prox = instrucoes;
-        instrucoes = instruc;
+
+        double v = qual_v == 'A'? 5 : 10;
+        double fracao = (1.0*(frac1 - '0'))/(frac2 - '0');
+        instrucao i = nova_instrucao(v, fracao, tipo);
+        i->prox = instrucoes;
+        instrucoes = i;
     }
-    
+
     while(instrucoes != NULL){
-        printf("v: %c\nfrac: %.2lf\ntipo: %c\n\n", instrucoes->v, instrucoes->frac, instrucoes->tipo);
+        printf("v: %.2lf\nfrac: %.2lf\ntipo: %c\n\n", instrucoes->v, instrucoes->fracao, instrucoes->tipo);
         instrucoes = instrucoes->prox;
     }
 

@@ -37,7 +37,7 @@ funcao inversa(funcao f){
 }
 
 funcao composicao(funcao f, funcao g){
-  funcao h = (f.a*g.a, f.a*g.b + f.b);
+  funcao h = {f.a*g.a, f.a*g.b + f.b};
   return h;
 }
 
@@ -65,8 +65,13 @@ instrucao nova_instrucao(double v, double fracao, char tipo){
     return i;
 }
 
+double calcular_tempo(instrucao instrucoes){
+  return 0;
+}
+
 int main(){
   char aux;
+  double tMax = -1;
   while(scanf("%c", &aux) > 0){
     instrucao instrucoes = NULL;
     char qual_v, tipo, aux;
@@ -87,12 +92,15 @@ int main(){
       instrucoes = i;
 
     }while(scanf("%c", &aux) && aux != '\n');
-
-    while(instrucoes != NULL){
+  
+  
+    double t = calcular_tempo(instrucoes);
+    printf("%.2lf\n", calcular_tempo(instrucoes));
+    /*while(instrucoes != NULL){
         printf("v: %.2lf\nfrac: %.2lf\ntipo: %c\n\n",
               instrucoes->v, instrucoes->fracao, instrucoes->tipo);
         instrucoes = instrucoes->prox;
-    }
+    }*/
   }
 
 	return 0;

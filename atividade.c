@@ -54,7 +54,6 @@ struct s_instrucao{
 instrucao nova_instrucao(double v, double fracao, char tipo){
     instrucao i = (instrucao) malloc(sizeof(struct s_instrucao));
     if(i == NULL){
-      fprintf(stderr, "Erro na alocação de memória\n");
       exit(1);
     }
 

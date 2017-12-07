@@ -53,10 +53,6 @@ struct s_instrucao{
 
 instrucao nova_instrucao(double v, double fracao, char tipo){
     instrucao i = (instrucao) malloc(sizeof(struct s_instrucao));
-    if(i == NULL){
-      fprintf(stderr, "Erro na alocação de memória\n");
-      exit(1);
-    }
 
     i->v = v;
     i->fracao = fracao;
@@ -92,8 +88,8 @@ int main(){
       instrucoes = i;
 
     }while(scanf("%c", &aux) && aux != '\n');
-  
-  
+
+
     double t = calcular_tempo(instrucoes);
     printf("%.2lf\n", calcular_tempo(instrucoes));
     /*while(instrucoes != NULL){

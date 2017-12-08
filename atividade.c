@@ -6,7 +6,7 @@
  * andar: 5km/h
 */
 
-typedef struct s_funcao funcao;
+typedef struct s_funcao * funcao;
 
 struct s_funcao{
   double a;
@@ -14,33 +14,36 @@ struct s_funcao{
 };
 
 funcao nova_funcao(double a, double b){
-    funcao f;
-    f.a = a;
-    f.b = b;
+    funcao f = (funcao) malloc(sizeof(struct s_funcao));
+    f->a = a;
+    f->b = b;
     return f;
 }
 
 funcao soma(funcao f, funcao g){
-  funcao h = {f.a + g.a, f.b + g.b};
+  funcao h = nova_funcao(f->a + g->a, f->b + g->b);
   return h;
 }
 
 
 funcao multiplicacao(funcao f, double c){
-  funcao h = {c*f.a, c*f.b};
+  funcao h = nova_funcao(c*f->a, c*f->b);
   return h;
 }
 
 funcao inversa(funcao f){
-  funcao h = {1/f.a, -f.b/f.a};
+  funcao h = nova_funcao(1/f->a, -f->b/f->a);
   return h;
 }
 
 funcao composicao(funcao f, funcao g){
-  funcao h = {f.a*g.a, f.a*g.b + f.b};
+  funcao h = nova_funcao(f->a*g->a, f->a*g->b + f->b);
   return h;
 }
 
+double resultado_funcao(funcao f, double x){
+  return f->a*x + f->b;
+}
 
 typedef struct s_instrucao * instrucao;
 
@@ -65,7 +68,46 @@ instrucao nova_instrucao(double v, double fracao, char tipo){
     return i;
 }
 
+int contar_instrucoes(instrucao instrucoes){
+  int n = 0;
+  instrucao i = instrucoes;
+  while(i != NULL){
+    n++;
+    i = i->prox;
+  }
+  return n;
+}
+
 double calcular_tempo(instrucao instrucoes){
+  int n = contar_instrucoes(instrucoes);
+
+  funcao funcoes_espacos[n];
+  funcao funcoes_tempos[n];
+
+  double tempos[n];
+  double espacos[n];
+
+  instrucao i = instrucoes;
+  int j = n-1;
+  while(j >= 0){
+    espacos[j] = -1;
+    tempos[j] = -1;
+
+    funcoes_espacos[j] = nova_funcao(instrucoes->v, -1);
+    funcoes_tempos[j] = nova_funcao(1/(instrucoes->v), -1);
+    if(j == 0){
+      funcoes_espacos[j]->b = 0;
+      funcoes_tempos[j]->b = 0;
+    }else if(j == n-1){
+      espacos[j] = 100;
+    }
+
+    i = i->prox;
+    j--;
+  }
+
+
+
   return 0;
 }
 
@@ -95,12 +137,12 @@ int main(){
 
 
     double t = calcular_tempo(instrucoes);
-    printf("%.2lf\n", calcular_tempo(instrucoes));
-    /*while(instrucoes != NULL){
+    printf("%.2lf\n", t);
+    while(instrucoes != NULL){
         printf("v: %.2lf\nfrac: %.2lf\ntipo: %c\n\n",
               instrucoes->v, instrucoes->fracao, instrucoes->tipo);
         instrucoes = instrucoes->prox;
-    }*/
+    }
   }
 
 	return 0;

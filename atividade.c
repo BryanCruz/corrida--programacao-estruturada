@@ -1,3 +1,6 @@
+//Bryan Bialokur da Cruz, RA: 11052316
+//Melissa Gabriela Pereira da Soledade Perrone, RA: 11072216
+
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -24,6 +27,10 @@ funcao soma(funcao f, funcao g){
   return h;
 }
 
+funcao subtracao(funcao f, funcao g){
+  funcao h = nova_funcao(f.a - g.a, f.b - g.b);
+  return h;
+}
 
 funcao multiplicacao(funcao f, double c){
   funcao h = nova_funcao(c*f.a, c*f.b);
@@ -86,29 +93,33 @@ double calcular_tempo(instrucao instrucoes){
 
   funcao funcoes_espacos[n];
   funcao funcoes_tempos[n];
-  funcao funcoes_aux[n];
 
-  instrucao i = instrucoes;
   int j = 0;
-
+  instrucao i = instrucoes;
   while(j < n && instrucoes != NULL){
-    funcoes_aux[j] = nova_funcao(1/(1-i->fracao), 0);
-    char tipo = i->tipo;
-
-    funcoes_espacos[j].b = 0;
-    funcoes_aux[j].b = 0;
-    funcoes_tempos[j].b = 0;
-
     if(j == 0){
-      funcoes_espacos[j] = nova_funcao(i->v, 0); //So = v * to
-      funcoes_tempos[j] = nova_funcao(1, 0);     //to = to
+      //So = v * to
+      funcoes_espacos[j] = nova_funcao(i->v, 0);
+
+      //to = to
+      funcoes_tempos[j] = nova_funcao(1, 0);
+
     }else{
-      if(tipo == 'E'){
-        funcoes_espacos[j].a = funcoes_aux[j].a * funcoes_espacos[j-1].a;
-        funcoes_tempos[j].a = ((funcoes_espacos[j].a - funcoes_espacos[j-1].a)/i->v + funcoes_tempos[j-1].a);
+
+      if(i->tipo == 'E'){
+        //S - Sa = fracao*S -> S = Sa / (1 - fracao)
+        funcoes_espacos[j] = composicao(nova_funcao(1/(1-i->fracao), 0), funcoes_espacos[j-1]);
+
+        //S = v * (t - ta) + Sa -> t = S/v + (ta - Sa/v)
+        funcoes_tempos[j] = soma(composicao(nova_funcao(1/i->v, 0), funcoes_espacos[j]),
+           subtracao(funcoes_tempos[j-1], multiplicacao(funcoes_espacos[j-1], 1/i->v)));
       }else{
-        funcoes_tempos[j].a = funcoes_aux[j].a * funcoes_tempos[j-1].a;
-        funcoes_espacos[j].a = ((funcoes_tempos[j].a - funcoes_tempos[j-1].a)*i->v + funcoes_espacos[j-1].a);
+        //t - ta = fracao*t -> t = ta / (1 - fracao)
+        funcoes_tempos[j] = composicao(nova_funcao(1/(1-i->fracao), 0), funcoes_tempos[j-1]);
+
+        //S = v * (t - ta) + Sa -> S = v*t + (Sa - v*ta)
+        funcoes_espacos[j] = soma(composicao(nova_funcao(i->v, 0), funcoes_tempos[j]),
+           subtracao(funcoes_espacos[j-1], multiplicacao(funcoes_tempos[j-1], i->v)));
       }
     }
     i = i->prox;
